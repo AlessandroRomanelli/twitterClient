@@ -2289,7 +2289,7 @@ a:hover .app--avatar {
   color: #ed5a5a;
 }
 /* line 131, ../sass/global.sass */
-.app--tweet--list, .app--user--list {
+.app--tweet--list, .app--user--list, .app--message--list {
   list-style: none;
   padding-bottom: 195px;
 }
@@ -2417,7 +2417,6 @@ a:hover .app--avatar {
 /* line 207, ../sass/global.sass */
 .app--message--list, .app--message--conversation {
   list-style: none;
-  height: 150%;
 }
 /* line 210, ../sass/global.sass */
 .app--message--list .app--avatar, .app--message--conversation .app--avatar {

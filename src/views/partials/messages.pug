@@ -1,15 +1,15 @@
 .grid-33
   .app--section
     ul.app--message--list
-      - var n = 4;
+      - var n = messagesData.length-1;
       li
         - var name = ""
         while n > -1
-          if name != messagesData[n].sender.name
-            h3
-              | Messages from 
-              a(href=`https://twitter.com/${messagesData[n].sender_screen_name}` target="_blank") #{messagesData[n].sender.name}
           ul.app--message--conversation
+            if name != messagesData[n].sender.name
+              h3
+                | Messages from #{space}
+                a(href=`https://twitter.com/${messagesData[n].sender_screen_name}` target="_blank") #{messagesData[n].sender.name}
             li.app--message
               a(href=`https://twitter.com/${messagesData[n].sender_screen_name}` target="_blank")
                 .app--avatar(style=`background-image: url(${messagesData[n].sender.profile_image_url_https})`)

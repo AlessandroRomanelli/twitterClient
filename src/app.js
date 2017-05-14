@@ -6,6 +6,7 @@ const Twit = require('twit');
 const config = require('../config.js');
 const ms = require('ms');
 const bodyParser = require('body-parser');
+const favicon = require('serve-favicon')
 
 var T = new Twit(config);
 var app = express();
@@ -30,10 +31,13 @@ function getTimeDiff(array, isLong) {
   return res
 }
 
-app.use(express.static(__dirname + '/public'));
-
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
+
+app.use(express.static(__dirname + '/public'));
+
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -41,9 +45,10 @@ app.get('/', (req, res) => {
   T.get('account/verify_credentials', {skip_status: true})
   .then(({ data }) => {
     if (data.errors != undefined) {
+      data.errors[0].code = 401;
       res.render('error', {error: data.errors});
     } else if (data === "") {
-      res.render('error', {error: [{code: 503, message: "We could not connect to the Twitter API, please check your internet connection."}]})
+      res.render('error', {error: [{code: 503, message: "Can't connect to the Twitter API."}]})
     } else {
       return Promise.all([
         data,
@@ -67,6 +72,7 @@ app.get('/', (req, res) => {
 app.post('/', (req,res) => {
   T.post('statuses/update', { status: req.body.text_tweet }, (err, data, response) => {
     if (err != undefined) {
+      err.allErrors[0].code = 403;
       return res.render('error', {error: err.allErrors});
     } else {
       res.redirect('back');
@@ -76,7 +82,7 @@ app.post('/', (req,res) => {
 
 app.use(function(req, res, next){
   res.status(404);
-  res.render('error', {error: [{code: 404, message: "Page not found, the URL you've requested is invalid."}]})
+  res.render('error', {error: [{code: 404, message: "Page not found: invalid URL."}]})
 });
 
 app.listen(process.env.PORT || 3000);

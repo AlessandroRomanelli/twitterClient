@@ -8,3 +8,14 @@ $("#tweet-textarea").keydown(function() {
     $("#tweet-char").removeClass("negative");
   }
 });
+
+$(".button").each(function(i) {
+  $(this).click(() => {
+    $(this).toggleClass("button-text");
+    if ($(this).hasClass("button-text")) {
+      $(this).text("Unfollow");
+    } else {
+      $(this).text("Follow");
+    }
+  })
+});
