@@ -215,6 +215,7 @@ legend {
 /* line 319, ../sass/circle/core/_reset.sass */
 textarea {
   overflow: auto;
+  resize: none;
 }
 
 /* line 326, ../sass/circle/core/_reset.sass */
@@ -1291,7 +1292,7 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 
 /* line 41, ../sass/circle/core/_utilities.sass */
 .negative {
-  color: #ed5a5a;
+  color: #ed5a5a !important;
 }
 
 /* line 44, ../sass/circle/core/_utilities.sass */

@@ -1,16 +1,30 @@
 if profileData != undefined
-  header.circle--header(style={"background-image": `url("${profileData.profile_banner_url}")`})
-    .bounds
-      .circle--fluid
-        .circle--fluid--cell
-          a.logo(href='/')
-            include ../../public/images/twitter.svg
-            h1 @#{profileData.screen_name}
-        .circle--fluid--cell.align-right
-          nav
-            ul.circle--inline
-              li
-                a(href='https://twitter.com/') Sign Out
+  if profileData.profile_banner_url != undefined
+    header.circle--header(style={"background-image": `url("${profileData.profile_banner_url}")`})
+      .bounds
+        .circle--fluid
+          .circle--fluid--cell
+            a.logo(href='/')
+              include ../../public/images/twitter.svg
+              h1 @#{profileData.screen_name}
+          .circle--fluid--cell.align-right
+            nav
+              ul.circle--inline
+                li
+                  a(href='https://twitter.com/') Sign Out
+  else
+    header.circle--header
+      .bounds
+        .circle--fluid
+          .circle--fluid--cell
+            a.logo(href='/')
+              include ../../public/images/twitter.svg
+              h1 @#{profileData.screen_name}
+          .circle--fluid--cell.align-right
+            nav
+              ul.circle--inline
+                li
+                  a(href='https://twitter.com/') Sign Out
 else
   header.circle--header
     .bounds

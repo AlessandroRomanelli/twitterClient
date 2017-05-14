@@ -4,6 +4,7 @@
   "description": "An app that renders the contents of my Twitter profile",
   "main": "app.js",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alessandro Romanelli",
