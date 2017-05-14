@@ -1,0 +1,30 @@
+.grid-33
+  .app--section
+    - var n = 0
+    ul.app--tweet--list
+      while n < 5
+        li
+          strong.app--tweet--timestamp #{tweetsData[n].sinceCreation}
+          a.app--tweet--author
+            .app--avatar(style=`background-image: url(${tweetsData[n].user.profile_image_url_https})`)
+              img(src=`${tweetsData[n].user.profile_image_url_https}`)
+            h4 #{tweetsData[n].user.name}
+            |  @#{tweetsData[n].user.screen_name}
+          p #{tweetsData[n].text}
+          ul.app--tweet--actions.circle--list--inline
+            li
+              a.app--reply
+                span.tooltip Reply
+                include ../../public/images/reply.svg
+            li
+              a.app--retweet
+                span.tooltip Retweet
+                include ../../public/images/retweet.svg
+                strong #{tweetsData[n].retweet_count}
+            li
+              a.app--like
+                span.tooltip Like
+                include ../../public/images/like.svg
+                strong #{tweetsData[n].favorite_count}
+                - n++
+block content

@@ -1,0 +1,26 @@
+extends ./head
+block content
+  body
+    include ./partials/header
+    .bounds.app--body
+      .error.grid-66.centered.align-center
+        include ../public/images/twitter.svg
+        case error[0].code
+          when 89
+            h1 Ooops, something went horribly wrong!
+            h2 It appears that there was an issue with your authentication.
+            | Please make sure that you have a valid #{space}
+            strong config.js #{space}
+            | file and that it's properly linked to the #{space}
+            strong app.js
+          when 186
+            h1 Ooops, something went horribly wrong!
+            h2 There was a problem with the length of your tweet.
+            | #{error[0].message} #{space}
+            strong Please shorten your text!
+          default
+            h1 Error #{error[0].code}
+            h2 Ooops, something went horribly wrong!
+            | #{error[0].message} Click #{space}
+            a(href="../") here
+            | #{space} to return to the homepage.

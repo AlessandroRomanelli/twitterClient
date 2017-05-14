@@ -1,0 +1,18 @@
+{
+  "name": "twitter_client",
+  "version": "1.0.0",
+  "description": "An app that renders the contents of my Twitter profile",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alessandro Romanelli",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "ms": "^1.0.0",
+    "pug": "^2.0.0-rc.1",
+    "twit": "^2.2.5"
+  }
+}

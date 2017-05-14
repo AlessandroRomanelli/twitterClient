@@ -1,0 +1,17 @@
+.grid-33
+  .app--section
+    - var n = 0
+    ul.app--user--list
+      while n < 5
+        li
+          .circle--fluid
+            .circle--fluid--cell.circle--fluid--primary
+              a.app--tweet--author(href=`https://twitter.com/${friendsData[n].screen_name}` target="_blank")
+                .app--avatar(style=`background-image: url(${friendsData[n].profile_image_url_https})`)
+                  img(src=`${friendsData[n].profile_image_url_https}`)
+                h4 #{friendsData[n].name}
+                p @#{friendsData[n].screen_name}
+            .circle--fluid--cell
+              a.button.button-text Unfollow
+              - n++;
+block content

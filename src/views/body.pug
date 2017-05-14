@@ -1,0 +1,20 @@
+extends ./head
+block content
+  body
+    include ./partials/header
+    include ./partials/tweeter
+    .bounds.app--body
+      .app--section--header
+        .grid-33
+          .app--section--heading
+            h2 Latest Tweets
+        .grid-33
+          .app--section--heading
+            strong #{profileData.friends_count}
+            h2 Following
+        .grid-33
+          .app--section--heading
+            h2 Received Messages
+      include ./partials/tweets
+      include ./partials/friends
+      include ./partials/messages

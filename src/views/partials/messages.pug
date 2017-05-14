@@ -1,0 +1,20 @@
+.grid-33
+  .app--section
+    ul.app--message--list
+      - var n = 4;
+      li
+        - var name = ""
+        while n > -1
+          if name != messagesData[n].sender.name
+            h3
+              | Messages from 
+              a(href=`https://twitter.com/${messagesData[n].sender_screen_name}` target="_blank") #{messagesData[n].sender.name}
+          ul.app--message--conversation
+            li.app--message
+              a(href=`https://twitter.com/${messagesData[n].sender_screen_name}` target="_blank")
+                .app--avatar(style=`background-image: url(${messagesData[n].sender.profile_image_url_https})`)
+                  img(src=`${messagesData[n].sender.profile_image_url_https}`)
+              p.app--message--text #{messagesData[n].text}
+              p.app--message--timestamp #{messagesData[n].sinceCreation} ago
+              - name = messagesData[n].sender.name;
+              - n--;
