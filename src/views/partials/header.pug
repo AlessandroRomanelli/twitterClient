@@ -32,7 +32,7 @@ else
         .circle--fluid--cell
           a.logo(href='/')
             include ../../public/images/twitter.svg
-            case error[0].code
+            case errorArr[0].code
               when 186
                 h1 @click_2_return
               when 404

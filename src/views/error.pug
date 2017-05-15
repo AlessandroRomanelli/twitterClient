@@ -5,9 +5,9 @@ block content
     .bounds.app--body
       .error.grid-66.centered.align-center
         include ../public/images/twitter.svg
-        h1 Error #{error[0].code}
-        h2 #{error[0].message}
-        case error[0].code
+        h1 Error #{errorArr[0].code}
+        h2 #{errorArr[0].message}
+        case errorArr[0].code
           when 401
             | Please make sure that you have a valid #{space}
             strong config.js #{space}

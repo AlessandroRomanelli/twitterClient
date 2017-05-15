@@ -3,11 +3,12 @@
 //Including the required modules
 const fs = require('fs');
 const express = require('express');
-const router = express.Router();
+const url = require('url');
 const Twit = require('twit');
 const ms = require('ms');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
+const session = require('express-session')
 //Check if there is a config.js file in the same folder of the app.js
 if (!fs.existsSync(__dirname + '/config.js')) {
   //If there isn't, create a placeholder
@@ -73,6 +74,12 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
+
 //Handling GET requests on root
 app.get('/', (req, res) => {
   //GET request to the Twitter API for profile data
@@ -84,11 +91,14 @@ app.get('/', (req, res) => {
       //Define it error 401, for bad authentication
       data.errors[0].code = 401;
       //Render the error page with the errors object passed to the pug template
-      res.render('error', {error: data.errors});
+      req.session.error = data.errors;
+      res.redirect('/error');
     //If returned data is empty string ==> Connection is NOT OK
     } else if (data === "") {
       //Return 503 error for connection problems
-      res.render('error', {error: [{code: 503, message: "Can't connect to the Twitter API."}]})
+      var error = [{code: 503, message: "Can't connect to the Twitter API."}];
+      req.session.error = error;
+      res.redirect('/error');
       //Otherwise
     } else {
       //Run asynchronously these functions and return them into an array of objects
@@ -136,8 +146,9 @@ app.post('/', (req,res) => {
         //Otherwise pass the status code 403 ==> Bad Request
         err.allErrors[0].code = 403;
       }
+      req.session.error = err.allErrors;
       //Renders the error page passing the allErrors array
-      return res.render('error', {error: err.allErrors});
+      res.redirect('/error');
       //Otherwise if there are no errors
     } else {
       //Redirect to the root (refreshes homepage to display the new tweet)
@@ -146,12 +157,23 @@ app.post('/', (req,res) => {
   });
 })
 
+app.get('/error', (req, res) => {
+  var error = req.session.error;
+  if (error != undefined) {
+    res.render('error', {errorArr: error});
+  } else {
+    res.redirect('/');
+  }
+})
+
 //Handling 404 occasions
 app.use(function(req, res, next){
   //Set the status to 404
   res.status(404);
+  var error = [{code: 404, message: "Page not found: invalid URL."}];
+  req.session.error = error;
   //Render the error page for the 404 error
-  res.render('error', {error: [{code: 404, message: "Page not found: invalid URL."}]})
+  res.redirect("/error");
 });
 
 //Set the port onto which the server should be listening
