@@ -5,7 +5,7 @@ if profileData != undefined
         .circle--fluid
           .circle--fluid--cell
             a.logo(href='/')
-              include ../../public/images/twitter.svg
+              img(src=`${profileData.profile_image_url_https}`)
               h1 @#{profileData.screen_name}
           .circle--fluid--cell.align-right
             nav
@@ -18,7 +18,7 @@ if profileData != undefined
         .circle--fluid
           .circle--fluid--cell
             a.logo(href='/')
-              include ../../public/images/twitter.svg
+              img(src=`${profileData.profile_image_url_https}`)
               h1 @#{profileData.screen_name}
           .circle--fluid--cell.align-right
             nav

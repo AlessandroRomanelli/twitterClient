@@ -2130,6 +2130,14 @@ body {
   fill: #fff;
   margin: -3px 15px -3px 0;
 }
+
+.logo img {
+  border-radius: 50%;
+  float: left;
+  width: 40px;
+  fill: #fff;
+  margin: -10px 15px -3px 10px
+}
 /* line 20, ../sass/global.sass */
 .logo h1 {
   font-size: 1.8rem;
@@ -2507,6 +2515,20 @@ input[type="submit"],
 input[type="reset"],
 input[type="button"] {
   padding: 16px 20px;
+}
+
+.error--messages {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: auto;
+}
+
+.error--messages svg {
+  margin-bottom: 25px;
+  width: 200px;
+  fill: #1da1f2;
 }
 
 .error {

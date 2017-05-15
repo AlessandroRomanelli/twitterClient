@@ -1,34 +1,48 @@
 'use strict'
-
+const fs = require('fs');
 const express = require('express');
 const router = express.Router();
 const Twit = require('twit');
-const config = require('../config.js');
 const ms = require('ms');
 const bodyParser = require('body-parser');
-const favicon = require('serve-favicon')
+const favicon = require('serve-favicon');
+if (!fs.existsSync(__dirname + '/config.js')) {
+  fs.writeFileSync(__dirname + '/config.js',
+    `module.exports = {
+      consumer_key:          "-",
+      consumer_secret:       "-",
+      access_token:          "-",
+      access_token_secret:   "-"
+    }`
+  );
+}
+const config = require('./config.js');
 
 var T = new Twit(config);
 var app = express();
 
 //Function that assign to each item of an array a .sinceCreation property
 function getTimeDiff(array, isLong) {
-  const res = array.concat([])
-  //Get current time in MS
-  let curTime = new Date();
-  curTime = curTime.getTime();
-  //For each item of the passed array
-  res.forEach((elem, i) => {
-    //Get the creation time in MS
-    let postTime = new Date(res[i].created_at);
-    postTime = postTime.getTime();
-    //Get the span of time in between the two moments in MS
-    let diffTime = curTime - postTime;
-    diffTime = ms(diffTime, { long: isLong});
-    res[i].sinceCreation = diffTime;
-  })
+  if (array.errors == undefined) {
+    const res = array.concat([])
+    //Get current time in MS
+    let curTime = new Date();
+    curTime = curTime.getTime();
+    //For each item of the passed array
+    res.forEach((elem, i) => {
+      //Get the creation time in MS
+      let postTime = new Date(res[i].created_at);
+      postTime = postTime.getTime();
+      //Get the span of time in between the two moments in MS
+      let diffTime = curTime - postTime;
+      diffTime = ms(diffTime, { long: isLong});
+      res[i].sinceCreation = diffTime;
+    })
 
-  return res
+    return res
+  } else {
+    return array
+  }
 }
 
 app.set('view engine', 'pug');
@@ -72,7 +86,12 @@ app.get('/', (req, res) => {
 app.post('/', (req,res) => {
   T.post('statuses/update', { status: req.body.text_tweet }, (err, data, response) => {
     if (err != undefined) {
-      err.allErrors[0].code = 403;
+      if (err.statusCode == 401) {
+        err.allErrors[0].code = 401;
+        err.allErrors[0].message = err.allErrors[0].error;
+      } else {
+        err.allErrors[0].code = 403;
+      }
       return res.render('error', {error: err.allErrors});
     } else {
       res.redirect('back');
