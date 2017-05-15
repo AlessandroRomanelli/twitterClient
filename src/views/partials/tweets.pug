@@ -5,7 +5,7 @@
       while n < 5
         li
           strong.app--tweet--timestamp #{tweetsData[n].sinceCreation}
-          a.app--tweet--author
+          a.app--tweet--author(href=`https://twitter.com/${tweetsData[n].user.screen_name}/status/${tweetsData[n].id_str}`, target="_blank")
             .app--avatar(style=`background-image: url(${tweetsData[n].user.profile_image_url_https})`)
               img(src=`${tweetsData[n].user.profile_image_url_https}`)
             h4 #{tweetsData[n].user.name}

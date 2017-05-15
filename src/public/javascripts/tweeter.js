@@ -1,4 +1,4 @@
-$("#tweet-textarea").keydown(function() {
+$("#tweet-textarea").on("keyup", function() {
   var tweetLength = $(this).val().length;
   var delta = 140 - tweetLength;
   $("#tweet-char").text(delta);
