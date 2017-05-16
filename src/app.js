@@ -74,6 +74,7 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+//Setting up the session storer
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
@@ -90,14 +91,17 @@ app.get('/', (req, res) => {
     if (data.errors != undefined) {
       //Define it error 401, for bad authentication
       data.errors[0].code = 401;
-      //Render the error page with the errors object passed to the pug template
+      //Store the current error within a cookie
       req.session.error = data.errors;
+      //Send the user to the error route
       res.redirect('/error');
     //If returned data is empty string ==> Connection is NOT OK
     } else if (data === "") {
       //Return 503 error for connection problems
       var error = [{code: 503, message: "Can't connect to the Twitter API."}];
+      //Store the current error within a cookie
       req.session.error = error;
+      //Send the user to the error route
       res.redirect('/error');
       //Otherwise
     } else {
@@ -116,7 +120,7 @@ app.get('/', (req, res) => {
   })
   //When they are all completed
   .then(([ profile, tweets, friends, messages ]) => {
-    //Render the body page passing the four objects as JSON
+    //Render the body page passing the four objects
     res.render('body', {
       profileData: profile,
       //Call the getTimeDiff function to have a property to display the sinceCreation time, shortened
@@ -146,6 +150,7 @@ app.post('/', (req,res) => {
         //Otherwise pass the status code 403 ==> Bad Request
         err.allErrors[0].code = 403;
       }
+      //Store the current error within a cookie
       req.session.error = err.allErrors;
       //Renders the error page passing the allErrors array
       res.redirect('/error');
@@ -157,11 +162,17 @@ app.post('/', (req,res) => {
   });
 })
 
+//When user is redirected to the error route
 app.get('/error', (req, res) => {
+  //Read the error property stored in the cookie
   var error = req.session.error;
+  //If it's defined
   if (error != undefined) {
+    //Render the error page and pass the error
     res.render('error', {errorArr: error});
+    //Otherwise if user visits /error but there is no error to pass
   } else {
+    //Redirect to root
     res.redirect('/');
   }
 })
@@ -170,7 +181,9 @@ app.get('/error', (req, res) => {
 app.use(function(req, res, next){
   //Set the status to 404
   res.status(404);
+  //Creating an error for 404s
   var error = [{code: 404, message: "Page not found: invalid URL."}];
+  //Store the error in a cookie
   req.session.error = error;
   //Render the error page for the 404 error
   res.redirect("/error");
