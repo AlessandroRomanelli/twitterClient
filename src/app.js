@@ -33,7 +33,7 @@ var app = express();
 //Function that assign to each item of an array a .sinceCreation property
 function getTimeDiff(array, isLong) {
   //If the array passed to the function doesn't have errors in it
-  if (array.errors == undefined) {
+  if (!array.errors) {
     //Create a duplicate of the passed array to work on
     const res = array.concat([])
     //Get current time in MS
@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
   //When data is returned
   .then(({ data }) => {
     //If there are errors ==> Connection is OK but Auth is BAD
-    if (data.errors != undefined) {
+    if (data.errors) {
       //Define it error 401, for bad authentication
       data.errors[0].code = 401;
       //Store the current error within a cookie
@@ -121,14 +121,21 @@ app.get('/', (req, res) => {
   //When they are all completed
   .then(([ profile, tweets, friends, messages ]) => {
     //Render the body page passing the four objects
-    res.render('body', {
-      profileData: profile,
-      //Call the getTimeDiff function to have a property to display the sinceCreation time, shortened
-      tweetsData: getTimeDiff(tweets.data, false),
-      friendsData: friends.data.users,
-      //Call the getTimeDiff function to have a property to display the sinceCreation time
-      messagesData: getTimeDiff(messages.data, true)
-    })
+    tweets.data = getTimeDiff(tweets.data, false);
+    messages.data = getTimeDiff(messages.data, true);
+    if (!tweets.data.errors) {
+      res.render('body', {
+        profileData: profile,
+        tweetsData: tweets.data,
+        friendsData: friends.data.users,
+        messagesData: messages.data
+      })
+    } else {
+      tweets.data.errors[0].code = 500;
+      tweets.data.errors[0].message = "Internal server error, cannot fulfill request."
+      req.session.error = tweets.data.errors;
+      res.redirect('/error');
+    }
   })
   //If there are any errors log the error message in the console
   .catch(err => console.log('\n\nOoops, something went wrong!\n', err.message))
@@ -139,7 +146,7 @@ app.post('/', (req,res) => {
   //POST request to the Twitter API, submitting the text of the tweet
   T.post('statuses/update', { status: req.body.text_tweet }, (err, data, response) => {
     //If there are errors
-    if (err != undefined) {
+    if (err) {
       //If error is a 401
       if (err.statusCode == 401) {
         //Pass the statusCode to the first object of the allErrors array ==> Non authorized
@@ -167,7 +174,7 @@ app.get('/error', (req, res) => {
   //Read the error property stored in the cookie
   var error = req.session.error;
   //If it's defined
-  if (error != undefined) {
+  if (error) {
     //Render the error page and pass the error
     res.render('error', {errorArr: error});
     //Otherwise if user visits /error but there is no error to pass
@@ -175,6 +182,7 @@ app.get('/error', (req, res) => {
     //Redirect to root
     res.redirect('/');
   }
+  req.session.error = null;
 })
 
 //Handling 404 occasions
